@@ -37,6 +37,11 @@ describe("MindfoldZen", () => {
   let signers: Signers;
   let contract: MindfoldZen;
   let contractAddress: string;
+  
+  const MOVE_ATTACK_NORTH = 0;
+  const MOVE_ATTACK_SOUTH = 1;
+  const MOVE_DEFEND_NORTH = 2;
+  const MOVE_DEFEND_SOUTH = 3;
 
   before(async function () {
     const ethSigners = await ethers.getSigners();
