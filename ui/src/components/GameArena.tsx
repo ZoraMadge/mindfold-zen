@@ -47,6 +47,7 @@ const GameArena = () => {
   const [gameStatus, setGameStatus] = useState<any>(null);
   const [decryptedResult, setDecryptedResult] = useState<any>(null);
   const [isLoadingGame, setIsLoadingGame] = useState(false);
+  const [gameHistory, setGameHistory] = useState<any[]>([]);
 
   useEffect(() => {
     if (error) {
