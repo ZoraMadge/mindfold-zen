@@ -16,6 +16,7 @@ import {SepoliaConfig} from "@fhevm/solidity/config/ZamaConfig.sol";
 contract MindfoldZen is SepoliaConfig {
     uint256 public constant INVITATION_TIMEOUT = 3 minutes;
     uint256 public constant MATCH_TIMEOUT = 10 minutes;
+    uint256 public constant MAX_GAME_DURATION = 15 minutes;
 
     // Move encoding: 0 = Attack North, 1 = Attack South, 2 = Defend North, 3 = Defend South
     uint8 private constant MOVE_ATTACK_NORTH = 0;
