@@ -156,6 +156,7 @@ contract MindfoldZen is SepoliaConfig {
         require(msg.sender == g.playerB, "MindfoldZen: only designated opponent");
         require(block.timestamp <= g.deadline, "MindfoldZen: submission window closed");
         require(!g.moveB.submitted, "MindfoldZen: move already submitted");
+        require(block.timestamp <= g.createdAt + MAX_GAME_DURATION, "MindfoldZen: game duration exceeded");
 
         euint8 move = FHE.fromExternal(encryptedMove, inputProof);
         g.moveB = EncryptedMove({value: move, submitted: true, submittedAt: block.timestamp});
