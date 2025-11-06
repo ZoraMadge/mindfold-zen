@@ -53,11 +53,13 @@ const GameArena = () => {
     if (error) {
       toast.error("Transaction failed", {
         description: error,
+        duration: 5000,
       });
     }
     if (txHash) {
       toast.success("Transaction submitted", {
         description: `Tx: ${txHash.slice(0, 10)}...`,
+        duration: 3000,
       });
     }
   }, [error, txHash]);
