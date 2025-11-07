@@ -24,6 +24,8 @@ A privacy-preserving strategy game built on Ethereum using **Zama's FHEVM (Fully
 
 Mindfold Zen revolutionizes blockchain gaming by implementing **end-to-end encryption** at the smart contract level. Unlike traditional games where moves can be monitored, our platform ensures that:
 
+> **Note**: This project uses Zama's FHEVM technology to enable fully homomorphic encryption on Ethereum-compatible chains.
+
 - **Moves remain completely confidential** until both players have committed
 - **No participant can see others' moves**, eliminating reactive play
 - **Only the final outcome is revealed** after game completion
