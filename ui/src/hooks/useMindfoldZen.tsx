@@ -47,7 +47,7 @@ function getContractMetadata(chainId: number | undefined): ContractMetadata {
 
 function assertInstance(instance: FhevmInstance | undefined): asserts instance is FhevmInstance {
   if (!instance) {
-    throw new Error("FHE instance is not ready yet.");
+    throw new Error("FHE instance is not ready yet. Please wait for initialization.");
   }
 }
 
