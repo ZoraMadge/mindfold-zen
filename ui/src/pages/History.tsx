@@ -321,6 +321,7 @@ const History = () => {
                 <Card className="paper-fold p-8 bg-gradient-paper shadow-fold text-center">
                   <Loader2 className="w-8 h-8 mx-auto mb-4 animate-spin text-primary" />
                   <p className="text-muted-foreground">Loading games...</p>
+                  <p className="text-xs text-muted-foreground mt-2">Please wait while we fetch your game history</p>
                 </Card>
               ) : games.length === 0 ? (
                 <Card className="paper-fold p-8 bg-gradient-paper shadow-fold">
