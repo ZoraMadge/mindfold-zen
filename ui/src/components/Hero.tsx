@@ -18,7 +18,7 @@ const Hero = () => {
         </div>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-12 reveal-fold" style={{ animationDelay: '0.2s' }}>
-          <div className="paper-fold bg-card rounded-2xl p-8 shadow-elevated max-w-md">
+          <div className="paper-fold bg-card rounded-2xl p-8 shadow-elevated max-w-md hover:shadow-lg transition-shadow">
             <h3 className="text-2xl font-semibold mb-4 text-foreground">The Art of Commitment</h3>
             <p className="text-muted-foreground leading-relaxed">
               Each round, both players secretly encrypt their moves. Once committed, there's no turning back. Strategy becomes pure—no bluffing based on opponent reactions.
