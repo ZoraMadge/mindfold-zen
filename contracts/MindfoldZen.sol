@@ -140,6 +140,7 @@ contract MindfoldZen is SepoliaConfig {
 
         emit GameCreated(gameId, msg.sender, opponent, g.deadline);
         emit MoveSubmitted(gameId, msg.sender, false);
+        emit GameStatusChanged(gameId, GameStatus.WaitingForOpponent, GameStatus.WaitingForOpponent);
     }
 
     /// @notice Allows the opponent to submit their encrypted move
