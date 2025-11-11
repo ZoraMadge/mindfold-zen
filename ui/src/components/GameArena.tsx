@@ -69,6 +69,24 @@ const GameArena = () => {
   }, [isConnected, fhevmReady, contractAddress, chainName]);
 
   useEffect(() => {
+    const saved = localStorage.getItem('gameState');
+    if (saved) {
+      try {
+        const state = JSON.parse(saved);
+        setGamePhase(state.gamePhase || "idle");
+        setSelectedMove(state.selectedMove || null);
+        setPlayerMove(state.playerMove || null);
+        setOpponentMove(state.opponentMove || null);
+        setCurrentGameId(state.currentGameId ? BigInt(state.currentGameId) : null);
+        setOpponentAddress(state.opponentAddress || "");
+        setGameIdInput(state.gameIdInput || "");
+      } catch (e) {
+        console.error("Failed to load game state:", e);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
     localStorage.setItem('gameState', JSON.stringify({
       gamePhase,
       selectedMove,
