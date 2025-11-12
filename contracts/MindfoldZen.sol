@@ -19,7 +19,7 @@ contract MindfoldZen is SepoliaConfig {
 
 // Move encoding: 0 = Attack North, 1 = Attack South, 2 = Defend North, 3 = Defend South
 uint8 private constant MOVE_ATTACK_NORTH = 0;
-uint8 private constant MOVE_ATTACK_SOUTH = 2;
+uint8 private constant MOVE_ATTACK_SOUTH = 1;
 uint8 private constant MOVE_DEFEND_NORTH = 2;
 uint8 private constant MOVE_DEFEND_SOUTH = 3;
 
