@@ -32,7 +32,7 @@ task("zen:create-game", "Create a game by inviting an opponent with your encrypt
 
     const tx = await contract
       .connect(signer)
-      .createGame(encrypted.handles[0], args.opponent, encrypted.inputProof);
+      .createGame(args.opponent, encrypted.handles[0], encrypted.inputProof);
 
     console.log(`Submitted createGame tx: ${tx.hash}`);
     const receipt = await tx.wait();
