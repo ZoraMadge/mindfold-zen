@@ -17,7 +17,7 @@ async function encryptMove(
   signer: HardhatEthersSigner,
   move: number,
 ): Promise<{ handle: string; proof: string }> {
-  if (move < 0 || move > 4) throw new Error("Invalid move");
+  if (move < 0 || move > 3) throw new Error("Invalid move");
   const cipher = await fhevm.createEncryptedInput(contractAddress, signer.address).add8(move).encrypt();
   return { handle: cipher.handles[0], proof: cipher.inputProof };
 }
