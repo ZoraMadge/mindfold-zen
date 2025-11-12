@@ -17,11 +17,11 @@ contract MindfoldZen is SepoliaConfig {
     uint256 public constant INVITATION_TIMEOUT = 3 minutes;
     uint256 public constant MATCH_TIMEOUT = 10 minutes;
 
-    // Move encoding: 0 = Attack North, 1 = Attack South, 2 = Defend North, 3 = Defend South
-    uint8 private constant MOVE_ATTACK_NORTH = 0;
-    uint8 private constant MOVE_ATTACK_SOUTH = 1;
-    uint8 private constant MOVE_DEFEND_NORTH = 2;
-    uint8 private constant MOVE_DEFEND_SOUTH = 3;
+// Move encoding: 0 = Attack North, 1 = Attack South, 2 = Defend North, 3 = Defend South
+uint8 private constant MOVE_ATTACK_NORTH = 0;
+uint8 private constant MOVE_ATTACK_SOUTH = 2;
+uint8 private constant MOVE_DEFEND_NORTH = 2;
+uint8 private constant MOVE_DEFEND_SOUTH = 3;
 
     // Result encoding: 0 = Tie, 1 = Player A wins, 2 = Player B wins
     uint8 private constant RESULT_TIE = 0;
@@ -422,13 +422,13 @@ contract MindfoldZen is SepoliaConfig {
         FHE.allowThis(g.isTie);
 
         FHE.allow(g.encryptedOutcome, playerA);
-        // FHE.allow(g.encryptedOutcome, playerB);
+        FHE.allow(g.encryptedOutcome, playerB);
         FHE.allow(g.aWins, playerA);
-        // FHE.allow(g.aWins, playerB);
+        FHE.allow(g.aWins, playerB);
         FHE.allow(g.bWins, playerA);
-        // FHE.allow(g.bWins, playerB);
+        FHE.allow(g.bWins, playerB);
         FHE.allow(g.isTie, playerA);
-        // FHE.allow(g.isTie, playerB);
+        FHE.allow(g.isTie, playerB);
     }
 
     /// @notice Grants decryption permissions for moves to both players
