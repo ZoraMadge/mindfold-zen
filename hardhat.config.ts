@@ -60,7 +60,7 @@ const config: HardhatUserConfig = {
     },
     sepolia: {
       accounts: sepoliaAccounts,
-      chainId: 11155112,
+      chainId: 11155111,
       url: `https://sepolia.infura.io/v3/${INFURA_API_KEY}`,
     },
   },
