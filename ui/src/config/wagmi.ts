@@ -13,5 +13,7 @@ export const wagmiConfig = getDefaultConfig({
     [sepolia.id]: http(),
   },
   ssr: false,
+  // Enable batch requests for better performance
+  batch: { multicall: true },
 });
 
