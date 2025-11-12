@@ -149,7 +149,6 @@ describe("MindfoldZen", () => {
     expect(bWins).to.eq(true);
   });
 
-  /*
   it("handles forfeits when opponent misses the deadline", async () => {
     const aliceEncrypted = await encryptMove(contractAddress, signers.alice, 1); // Attack South
     await contract.connect(signers.alice).createGame(signers.bob.address, aliceEncrypted.handle, aliceEncrypted.proof);
@@ -168,9 +167,7 @@ describe("MindfoldZen", () => {
     expect(gameView.outcomeReady).to.eq(true);
     expect(outcome).to.eq(1); // Player A wins by default
   });
-  */
 
-  /*
   it("should allow cancelling expired games", async function () {
     const aliceMove = await encryptMove(contractAddress, signers.alice, 0); // Attack North
     const tx = await contract.connect(signers.alice).createGame(
@@ -179,7 +176,7 @@ describe("MindfoldZen", () => {
       aliceMove.proof
     );
     const receipt = await tx.wait();
-    
+
     // Extract gameId from event
     const gameCreatedEvent = receipt?.logs.find(
       (log: any) => log.topics[0] === ethers.id("GameCreated(uint256,address,address,uint256)")
@@ -195,7 +192,6 @@ describe("MindfoldZen", () => {
     const gameView = await contract.getGame(gameId);
     expect(gameView.status).to.eq(3); // Cancelled status
   });
-  */
 
   it("should return player games list", async () => {
     const aliceEncrypted = await encryptMove(contractAddress, signers.alice, 0);
