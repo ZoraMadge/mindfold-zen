@@ -48,6 +48,9 @@ const GameArena = () => {
   const [decryptedResult, setDecryptedResult] = useState<any>(null);
   const [isLoadingGame, setIsLoadingGame] = useState(false);
 
+  // Enhanced loading state management
+  const isGameLoading = isProcessing || isLoadingGame || fhevmReady === false;
+
   useEffect(() => {
     if (error) {
       toast.error("Transaction failed", {
