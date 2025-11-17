@@ -101,6 +101,7 @@ uint8 private constant MOVE_DEFEND_SOUTH = 3;
     event GameCancelled(uint256 indexed gameId);
     event DecryptionRequested(uint256 indexed gameId, uint256 requestId);
     event GameDecrypted(uint256 indexed gameId, uint8 moveA, uint8 moveB, uint8 outcome);
+    event MoveDecrypted(uint256 indexed gameId, address indexed player, uint8 move);
 
     modifier gameExists(uint256 gameId) {
         require(gameId < nextGameId, "MindfoldZen: game does not exist");
