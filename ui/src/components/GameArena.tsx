@@ -56,6 +56,8 @@ const GameArena = () => {
       toast.error("Transaction failed", {
         description: error,
       });
+      // Reset processing state on error
+      setGamePhase("idle");
     }
     if (txHash) {
       toast.success("Transaction submitted", {
