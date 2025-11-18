@@ -140,6 +140,26 @@ project/mindfold-zen/
    npm run dev
    ```
 
+## 🚀 Deployment Guide
+
+### Local Development
+
+1. Start Hardhat node: `npx hardhat node`
+2. Deploy contract: `npx hardhat deploy --network localhost`
+3. Update contract address in UI config
+4. Start UI: `cd ui && npm run dev`
+
+### Sepolia Testnet
+
+1. Set environment variables:
+   ```bash
+   export PRIVATE_KEY=your_private_key
+   export INFURA_API_KEY=your_infura_key
+   export ETHERSCAN_API_KEY=your_etherscan_key
+   ```
+2. Deploy: `npx hardhat deploy --network sepolia`
+3. Verify: `npx hardhat verify --network sepolia <contract_address>`
+
 ## 🎮 Game Flow
 
 ### Phase 1: Selection Phase
