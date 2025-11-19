@@ -361,6 +361,10 @@ MIT
 - Add real-time notifications for game events
 - Support for custom game rules and variants
 
+## 📹 Demo Video
+
+A complete demonstration of the MindfoldZen game is available in the project root: [mindfold-zen.mp4](mindfold-zen.mp4)
+
 ## 🙏 Acknowledgments
 
 - Built with [Zama's FHEVM](https://github.com/zama-ai/fhevm)
