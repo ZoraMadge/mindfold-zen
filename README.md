@@ -365,6 +365,10 @@ MIT
 
 A complete demonstration of the MindfoldZen game is available in the project root: [mindfold-zen.mp4](mindfold-zen.mp4)
 
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
 ## 🙏 Acknowledgments
 
 - Built with [Zama's FHEVM](https://github.com/zama-ai/fhevm)
