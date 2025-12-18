@@ -147,5 +147,69 @@ All colors MUST be HSL.
       transform: translateY(0) rotateX(0);
     }
   }
+
+  /* 渐变移动动画 */
+  @keyframes gradient-shift {
+    0%, 100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  .animate-gradient-shift {
+    background-size: 200% 200%;
+    animation: gradient-shift 8s ease infinite;
+  }
+
+  /* 闪烁动画 */
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  .animate-shimmer {
+    animation: shimmer 2s infinite;
+  }
+
+  /* 呼吸动画 */
+  @keyframes breathe {
+    0%, 100% {
+      opacity: 0.5;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.05);
+    }
+  }
+
+  .animate-breathe {
+    animation: breathe 2s ease-in-out infinite;
+  }
+
+  /* 进度条动画 */
+  @keyframes progress {
+    0% {
+      width: 0%;
+    }
+    100% {
+      width: 100%;
+    }
+  }
+
+  .animate-progress {
+    animation: progress 2s ease-in-out infinite;
+  }
+
+  /* 悬停缩放效果 */
+  .hover\:scale-102:hover {
+    transform: scale(1.02);
+  }
 }
 

@@ -1,5 +1,4 @@
 {
-  // UI package for MindfoldZen game
   "name": "mindfold-zen-ui",
   "private": true,
   "version": "0.1.0",

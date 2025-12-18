@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Lock, Unlock, Swords, Shield, Target, Zap, Loader2 } from "lucide-react";
+import { Lock, Unlock, Swords, Shield, Target, Zap, Loader2, X } from "lucide-react";
 import { toast } from "sonner";
 import { useAccount } from 'wagmi';
 import { useMindfoldZen } from "@/hooks/useMindfoldZen";
@@ -662,24 +662,63 @@ const GameArena = () => {
                 )}
               </div>
 
-              <div className="grid grid-cols-2 gap-4 mb-8">
-                {moves.map((move) => {
+              <div className="grid grid-cols-2 gap-6 mb-8 relative" style={{ isolation: 'isolate' }}>
+                {moves.map((move, index) => {
                   const Icon = move.icon;
                   const isSelected = selectedMove === move.id;
+                  const isAttack = move.id.includes('attack');
+                  
                   return (
                     <button
                       key={move.id}
-                      onClick={() => setSelectedMove(move.id)}
-                      className={`p-6 rounded-xl border-2 transition-all duration-300 ${
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setSelectedMove(move.id);
+                      }}
+                      style={{ zIndex: isSelected ? 10 : 1 }}
+                      className={`group relative p-8 rounded-2xl border-2 transition-all duration-300 overflow-visible ${
                         isSelected
-                          ? `border-primary bg-primary/10 shadow-lg scale-105`
-                          : "border-border hover:border-muted-foreground/50 hover:bg-muted/30"
+                          ? `border-primary ${isAttack ? 'bg-gradient-to-br from-red-500/20 to-orange-500/20' : 'bg-gradient-to-br from-blue-500/20 to-cyan-500/20'} shadow-2xl scale-105`
+                          : "border-border hover:border-primary/50 hover:bg-muted/50 hover:scale-102 hover:shadow-lg"
                       }`}
                     >
-                      <Icon className={`w-12 h-12 mx-auto mb-3 ${isSelected ? "text-primary" : "text-muted-foreground"}`} />
-                      <p className={`font-semibold text-lg ${isSelected ? "text-foreground" : "text-muted-foreground"}`}>
-                        {move.label}
-                      </p>
+                      {/* 选中时的外圈光效 - 使用伪元素避免阻挡 */}
+                      {isSelected && (
+                        <div 
+                          className="absolute -inset-1 rounded-2xl border-4 border-primary/30 pointer-events-none" 
+                          style={{ zIndex: -1 }}
+                        />
+                      )}
+                      
+                      {/* 背景动画效果 - 使用pointer-events-none避免阻挡点击 */}
+                      <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none ${isAttack ? 'bg-gradient-to-br from-red-500/10 to-orange-500/10' : 'bg-gradient-to-br from-blue-500/10 to-cyan-500/10'}`} />
+                      
+                      {/* 图标容器 */}
+                      <div className="relative z-10 flex flex-col items-center justify-center">
+                        <div className={`relative mb-4 ${isSelected ? 'animate-pulse' : ''}`}>
+                          {/* 图标光晕效果 */}
+                          {isSelected && (
+                            <div className="absolute inset-0 bg-primary/30 blur-xl rounded-full animate-ping pointer-events-none" style={{ animationDuration: '2s' }} />
+                          )}
+                          <Icon className={`w-16 h-16 transition-all duration-300 ${isSelected ? "text-primary scale-110" : "text-muted-foreground group-hover:text-primary group-hover:scale-110"}`} />
+                        </div>
+                        
+                        {/* 标签 */}
+                        <p className={`font-bold text-xl transition-colors ${isSelected ? "text-foreground" : "text-muted-foreground group-hover:text-foreground"}`}>
+                          {move.label}
+                        </p>
+                        
+                        {/* 选择指示器 */}
+                        {isSelected && (
+                          <div className="mt-2 w-12 h-1 bg-primary rounded-full animate-pulse" />
+                        )}
+                      </div>
+                      
+                      {/* 边框光效 - 使用pointer-events-none避免阻挡点击 */}
+                      {isSelected && (
+                        <div className="absolute inset-0 rounded-2xl border-2 border-primary animate-pulse opacity-50 pointer-events-none" />
+                      )}
                     </button>
                   );
                 })}
@@ -789,105 +828,204 @@ const GameArena = () => {
 
         {(gamePhase === "waiting-opponent" || gamePhase === "committed" || gamePhase === "waiting-resolution") && (
           <div className="max-w-3xl mx-auto">
-            <Card className="paper-fold p-8 bg-gradient-paper shadow-fold text-center">
-              {gameStatus?.status === 3 ? (
-                <>
-                  <X className="w-16 h-16 mx-auto mb-4 text-red-500" />
-                  <h4 className="text-2xl font-bold mb-3 text-foreground text-red-600">Game Cancelled</h4>
-                  <p className="text-muted-foreground mb-4">
-                    This game has been cancelled. You can start a new game.
-                  </p>
-                  <Button onClick={handleStartGame} className="mt-4">
-                    Start New Game
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <Lock className="w-16 h-16 mx-auto mb-4 text-primary animate-pulse" />
-                  <h4 className="text-2xl font-bold mb-3 text-foreground">
-                    {gamePhase === "waiting-opponent" && "Waiting for Opponent"}
-                    {gamePhase === "committed" && "Move Committed"}
-                    {gamePhase === "waiting-resolution" && "Resolving Game..."}
-                  </h4>
-                  {currentGameId && (
-                    <div className="bg-muted/30 rounded-lg p-4 font-mono text-sm text-muted-foreground mb-6">
-                      <div>Game ID: {currentGameId.toString()}</div>
-                      {playerMove && <div>Your Move: [encrypted]</div>}
-                      {gameStatus && (
-                        <>
-                          <div>Status: {gameStatus.status === 0 ? "Waiting" : gameStatus.status === 1 ? "Ready" : gameStatus.status === 2 ? "Resolved" : "Cancelled"}</div>
-                          <div>Move A: {gameStatus.moveASubmitted ? "✓" : "✗"}</div>
-                          <div>Move B: {gameStatus.moveBSubmitted ? "✓" : "✗"}</div>
-                          {gameStatus.outcomeReady && <div className="text-green-500 mt-2">✓ Outcome Ready</div>}
-                          {gameStatus.decrypted && <div className="text-green-500">✓ Decrypted</div>}
-                        </>
-                      )}
-                      {txHash && <div className="text-accent mt-2">✓ Tx: {txHash.slice(0, 10)}...</div>}
-                    </div>
-                  )}
-                  {(gamePhase === "waiting-opponent" || gamePhase === "committed") && (
-                    <p className="text-lg text-muted-foreground">
-                      {gamePhase === "waiting-opponent" && "Share the game ID with your opponent..."}
-                      {gamePhase === "committed" && "Waiting for opponent to commit their move..."}
-                    </p>
-                  )}
-                  {gamePhase === "waiting-resolution" && (
-                    <>
-                      <p className="text-lg text-muted-foreground mb-4">
-                        Both moves submitted. Resolving and decrypting game result...
-                      </p>
-                      <Loader2 className="w-8 h-8 mx-auto animate-spin text-primary" />
-                      <p className="text-sm text-muted-foreground mt-4">
-                        Check the History page for results once decryption completes
-                      </p>
-                    </>
-                  )}
-                </>
+            <Card className="paper-fold p-8 bg-gradient-paper shadow-fold text-center relative overflow-hidden">
+              {/* 背景脉冲效果 */}
+              {gameStatus?.status !== 3 && (
+                <div className="absolute inset-0 bg-primary/5 animate-pulse" />
               )}
+              
+              <div className="relative z-10">
+                {gameStatus?.status === 3 ? (
+                  <>
+                    <X className="w-16 h-16 mx-auto mb-4 text-red-500" />
+                    <h4 className="text-2xl font-bold mb-3 text-foreground text-red-600">Game Cancelled</h4>
+                    <p className="text-muted-foreground mb-4">
+                      This game has been cancelled. You can start a new game.
+                    </p>
+                    <Button onClick={handleStartGame} className="mt-4">
+                      Start New Game
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    {/* 进度条 */}
+                    <div className="w-full bg-muted/30 rounded-full h-2 mb-6 overflow-hidden">
+                      <div 
+                        className="h-full bg-primary rounded-full transition-all duration-500 ease-out" 
+                        style={{
+                          width: gamePhase === "waiting-resolution" ? "100%" : gamePhase === "committed" ? "75%" : "50%",
+                        }}
+                      />
+                    </div>
+                    
+                    <div className="relative inline-block mb-4">
+                      <div className="absolute inset-0 bg-primary/30 blur-2xl rounded-full animate-ping" style={{ animationDuration: '2s' }} />
+                      <Lock className="w-16 h-16 mx-auto relative text-primary animate-pulse" />
+                    </div>
+                    
+                    <h4 className="text-2xl font-bold mb-3 text-foreground">
+                      {gamePhase === "waiting-opponent" && "Waiting for Opponent"}
+                      {gamePhase === "committed" && "Move Committed"}
+                      {gamePhase === "waiting-resolution" && "Resolving Game..."}
+                    </h4>
+                    
+                    {currentGameId && (
+                      <div className="bg-muted/30 rounded-lg p-4 font-mono text-sm text-muted-foreground mb-6">
+                        <div>Game ID: {currentGameId.toString()}</div>
+                        {playerMove && <div>Your Move: [encrypted]</div>}
+                        {gameStatus && (
+                          <>
+                            <div>Status: {gameStatus.status === 0 ? "Waiting" : gameStatus.status === 1 ? "Ready" : gameStatus.status === 2 ? "Resolved" : "Cancelled"}</div>
+                            <div>Move A: {gameStatus.moveASubmitted ? "✓" : "✗"}</div>
+                            <div>Move B: {gameStatus.moveBSubmitted ? "✓" : "✗"}</div>
+                            {gameStatus.outcomeReady && <div className="text-green-500 mt-2">✓ Outcome Ready</div>}
+                            {gameStatus.decrypted && <div className="text-green-500">✓ Decrypted</div>}
+                          </>
+                        )}
+                        {txHash && <div className="text-accent mt-2">✓ Tx: {txHash.slice(0, 10)}...</div>}
+                      </div>
+                    )}
+                    
+                    {(gamePhase === "waiting-opponent" || gamePhase === "committed") && (
+                      <p className="text-lg text-muted-foreground">
+                        {gamePhase === "waiting-opponent" && "Share the game ID with your opponent..."}
+                        {gamePhase === "committed" && "Waiting for opponent to commit their move..."}
+                      </p>
+                    )}
+                    
+                    {gamePhase === "waiting-resolution" && (
+                      <>
+                        <p className="text-lg text-muted-foreground mb-4">
+                          Both moves submitted. Resolving and decrypting game result...
+                        </p>
+                        <Loader2 className="w-8 h-8 mx-auto animate-spin text-primary" />
+                        <p className="text-sm text-muted-foreground mt-4">
+                          Check the History page for results once decryption completes
+                        </p>
+                      </>
+                    )}
+                  </>
+                )}
+              </div>
             </Card>
           </div>
         )}
 
         {gamePhase === "resolved" && (
           <div className="max-w-4xl mx-auto">
-            <Card className="paper-fold p-8 bg-gradient-paper shadow-fold">
-              <div className="text-center mb-8">
-                <Unlock className="w-16 h-16 mx-auto mb-4 text-secondary" />
-                <h4 className="text-3xl font-bold mb-2 text-foreground">Revelation</h4>
-                <p className="text-muted-foreground">The strategic truth unfolds</p>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-6 mb-8">
-                <div className="bg-primary/5 border-2 border-primary/20 rounded-xl p-6">
-                  <p className="text-sm text-muted-foreground mb-2">Your Move</p>
-                  <p className="text-2xl font-bold text-primary">
-                    {playerMove ? getMoveDisplay(playerMove) : "---"}
-                  </p>
-                </div>
-                <div className="bg-secondary/5 border-2 border-secondary/20 rounded-xl p-6">
-                  <p className="text-sm text-muted-foreground mb-2">Opponent's Move</p>
-                  <p className="text-2xl font-bold text-secondary">
-                    {opponentMove ? getMoveDisplay(opponentMove) : "---"}
-                  </p>
-                </div>
-              </div>
-
-              {decryptedResult && (
-                <div className="bg-muted/30 rounded-lg p-6 mb-8 text-center">
-                  <p className="text-lg font-semibold mb-2">Result</p>
-                  {decryptedResult.aWins && <p className="text-2xl text-green-500">You Win! 🎉</p>}
-                  {decryptedResult.bWins && <p className="text-2xl text-red-500">You Lose</p>}
-                  {decryptedResult.isTie && <p className="text-2xl text-yellow-500">Draw</p>}
-                </div>
+            <Card className="paper-fold p-8 bg-gradient-paper shadow-fold relative overflow-hidden">
+              {/* 成功时的庆祝效果 */}
+              {decryptedResult?.aWins && (
+                <div className="absolute inset-0 bg-gradient-to-br from-green-500/20 to-emerald-500/20 animate-pulse" />
               )}
+              
+              <div className="relative z-10">
+                <div className="text-center mb-8">
+                  <div className="relative inline-block mb-4">
+                    {decryptedResult?.aWins && (
+                      <div className="absolute inset-0 bg-green-500/30 blur-2xl rounded-full animate-ping" style={{ animationDuration: '2s' }} />
+                    )}
+                    <Unlock className={`w-16 h-16 mx-auto relative ${decryptedResult?.aWins ? 'text-green-500 animate-bounce' : 'text-secondary'}`} />
+                  </div>
+                  <h4 className="text-3xl font-bold mb-2 text-foreground">Revelation</h4>
+                  <p className="text-muted-foreground">The strategic truth unfolds</p>
+                </div>
 
-              <Button
-                onClick={handleStartGame}
-                size="lg"
-                className="w-full text-lg py-6 h-auto"
-              >
-                Play Again
-              </Button>
+                {/* 对战视图 */}
+                <div className="relative grid md:grid-cols-2 gap-6 mb-8">
+                  {/* 玩家卡片 */}
+                  <div className="relative">
+                    <div className="absolute -top-2 -right-2 w-20 h-20 bg-primary/20 rounded-full blur-xl animate-pulse" />
+                    <div className="bg-gradient-to-br from-primary/10 to-primary/5 border-2 border-primary/30 rounded-xl p-6 relative overflow-hidden">
+                      <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full -mr-16 -mt-16" />
+                      <p className="text-sm text-muted-foreground mb-2 font-semibold">Your Move</p>
+                      <div className="flex items-center gap-3">
+                        {playerMove && (() => {
+                          const moveData = moves.find(m => m.id === playerMove);
+                          const MoveIcon = moveData?.icon || Swords;
+                          return <MoveIcon className="w-8 h-8 text-primary" />;
+                        })()}
+                        <p className="text-2xl font-bold text-primary">
+                          {playerMove ? getMoveDisplay(playerMove) : "---"}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* VS 分隔符 */}
+                  <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 hidden md:block">
+                    <div className="w-16 h-16 bg-background border-4 border-border rounded-full flex items-center justify-center shadow-lg">
+                      <span className="text-xl font-bold text-muted-foreground">VS</span>
+                    </div>
+                  </div>
+                  
+                  {/* 对手卡片 */}
+                  <div className="relative">
+                    <div className="absolute -top-2 -left-2 w-20 h-20 bg-secondary/20 rounded-full blur-xl animate-pulse" />
+                    <div className="bg-gradient-to-br from-secondary/10 to-secondary/5 border-2 border-secondary/30 rounded-xl p-6 relative overflow-hidden">
+                      <div className="absolute top-0 left-0 w-32 h-32 bg-secondary/10 rounded-full -ml-16 -mt-16" />
+                      <p className="text-sm text-muted-foreground mb-2 font-semibold">Opponent's Move</p>
+                      <div className="flex items-center gap-3">
+                        {opponentMove && (() => {
+                          const moveData = moves.find(m => m.id === opponentMove);
+                          const MoveIcon = moveData?.icon || Shield;
+                          return <MoveIcon className="w-8 h-8 text-secondary" />;
+                        })()}
+                        <p className="text-2xl font-bold text-secondary">
+                          {opponentMove ? getMoveDisplay(opponentMove) : "---"}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 结果展示 */}
+                {decryptedResult && (
+                  <div className={`rounded-xl p-8 mb-8 text-center relative overflow-hidden ${
+                    decryptedResult.aWins 
+                      ? 'bg-gradient-to-br from-green-500/20 to-emerald-500/10 border-2 border-green-500/30' 
+                      : decryptedResult.bWins
+                      ? 'bg-gradient-to-br from-red-500/20 to-orange-500/10 border-2 border-red-500/30'
+                      : 'bg-gradient-to-br from-yellow-500/20 to-amber-500/10 border-2 border-yellow-500/30'
+                  }`}>
+                    {/* 背景动画 */}
+                    <div className="absolute inset-0 opacity-20">
+                      <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white to-transparent animate-shimmer" />
+                    </div>
+                    
+                    <div className="relative z-10">
+                      <p className="text-lg font-semibold mb-4">Result</p>
+                      {decryptedResult.aWins && (
+                        <div className="flex flex-col items-center gap-2">
+                          <div className="text-4xl mb-2">🎉</div>
+                          <p className="text-3xl font-bold text-green-500">You Win!</p>
+                          <div className="w-24 h-1 bg-green-500 rounded-full mt-2" />
+                        </div>
+                      )}
+                      {decryptedResult.bWins && (
+                        <div className="flex flex-col items-center gap-2">
+                          <div className="text-4xl mb-2">💔</div>
+                          <p className="text-3xl font-bold text-red-500">You Lose</p>
+                        </div>
+                      )}
+                      {decryptedResult.isTie && (
+                        <div className="flex flex-col items-center gap-2">
+                          <div className="text-4xl mb-2">🤝</div>
+                          <p className="text-3xl font-bold text-yellow-500">Draw</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                <Button
+                  onClick={handleStartGame}
+                  size="lg"
+                  className="w-full text-lg py-6 h-auto"
+                >
+                  Play Again
+                </Button>
+              </div>
             </Card>
           </div>
         )}

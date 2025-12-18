@@ -1,9 +1,38 @@
 // import heroBg from "@/assets/hero-bg.png";
 
 const Hero = () => {
+  // 生成随机粒子位置和延迟
+  const particles = Array.from({ length: 20 }, (_, i) => ({
+    id: i,
+    left: Math.random() * 100,
+    top: Math.random() * 100,
+    delay: Math.random() * 2,
+    duration: 5 + Math.random() * 5,
+  }));
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      <div className="absolute inset-0 opacity-30 bg-gradient-to-br from-primary/20 via-secondary/20 to-accent/20" />
+      {/* 动态渐变背景 */}
+      <div className="absolute inset-0 opacity-40">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-secondary/30 to-accent/30 animate-gradient-shift" />
+      </div>
+      
+      {/* 浮动粒子效果 */}
+      <div className="absolute inset-0 overflow-hidden">
+        {particles.map((particle) => (
+          <div
+            key={particle.id}
+            className="absolute w-2 h-2 bg-primary/30 rounded-full"
+            style={{
+              left: `${particle.left}%`,
+              top: `${particle.top}%`,
+              animation: `float ${particle.duration}s ease-in-out infinite`,
+              animationDelay: `${particle.delay}s`,
+            }}
+          />
+        ))}
+      </div>
+      
       <div className="absolute inset-0 bg-gradient-zen opacity-60" />
       
       <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
