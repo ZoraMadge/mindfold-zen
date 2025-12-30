@@ -4,7 +4,7 @@ A privacy-preserving strategy game built on Ethereum using **Zama's FHEVM (Fully
 
 ## 🌐 Live Demo
 
-- **Vercel Deployment**: [https://mindfold-zen.vercel.app/](https://mindfold-zen.vercel.app/)
+- **Vercel Deployment**: [https://mindfold-zen-pro.vercel.app/](https://mindfold-zen-pro.vercel.app/)
 - **Video Demo**: See `mindfold-zen.mp4` in the project root for a complete walkthrough
 
 ## 📍 Contract Addresses
